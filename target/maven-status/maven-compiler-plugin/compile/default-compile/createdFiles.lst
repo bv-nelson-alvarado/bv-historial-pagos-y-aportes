@@ -1,0 +1,15 @@
+cl\bicevida\service\rest\SeviceHistorialPago.class
+cl\bicevida\ws\service\ObjectFactory.class
+cl\bicevida\ws\service\PagosYAportesSoapException.class
+cl\bicevida\ws\service\PagosYAportesWsVO.class
+cl\bicevida\service\rest\exception\WebApplicationJsonError.class
+cl\bicevida\ws\service\GetPagosYAportesResponse.class
+cl\bicevida\ws\service\GetPagosYAportes.class
+cl\bicevida\service\rest\exception\out\OutException.class
+cl\bicevida\ws\service\SoapFaultMessage.class
+cl\bicevida\ws\service\PagosyAportes.class
+cl\bicevida\ws\service\ResponseServiceTO.class
+cl\bicevida\ws\service\package-info.class
+cl\bicevida\ws\service\PagosyAportesPortImpl.class
+cl\bicevida\ws\service\PagosYAportesWS.class
+cl\bicevida\beans\processors\HistorialProcess.class

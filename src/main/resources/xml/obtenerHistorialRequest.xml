@@ -1,0 +1,16 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:pag="http://pagosyaportes.service.ws.bicevida.cl/">
+	<soapenv:Header />
+	<soapenv:Body>
+		<pag:getPagosYAportes>
+			<!--Optional: -->
+			<rutDv>17309540-6</rutDv>
+			<!--Optional: -->
+			<poliza>12-2057202</poliza>
+			<!--Optional: -->
+			<fechaDesde>01/01/2013</fechaDesde>
+			<!--Optional: -->
+			<fechaHasta>01/01/2014</fechaHasta>
+		</pag:getPagosYAportes>
+	</soapenv:Body>
+</soapenv:Envelope>
