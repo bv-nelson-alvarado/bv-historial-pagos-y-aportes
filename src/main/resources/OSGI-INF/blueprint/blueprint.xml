@@ -2,17 +2,6 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
     xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/blueprint/cxf http://camel.apache.org/schema/blueprint/cxf/cxf.xsd                   http://camel.apache.org/schema/blueprint  http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
-    <!-- define bean llamada ws -->
-    <cxf:rsServer address="/bv" id="historialEndpoint"
-        loggingFeatureEnabled="false" serviceClass="cl.bicevida.service.rest.SeviceHistorialPago">
-        <cxf:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
-            <bean
-                class="cl.bicevida.service.rest.exception.WebApplicationJsonError" id="exceptionMapper">
-                <property name="addMessageToResponse" value="true"/>
-            </bean>
-        </cxf:providers>
-    </cxf:rsServer>
     <camelContext id="_ctxHistorial" xmlns="http://camel.apache.org/schema/blueprint">
         <propertyPlaceholder id="properties" location="classpath:/conf.properties"/>
         <onException>
@@ -22,13 +11,25 @@
                 <constant>true</constant>
             </handled>
             <bean method="exceptionProcess" ref="HistorialProcessResponse"/>
+            <marshal id="_marshal_3">
+                <json id="_json_2" library="Jackson"/>
+            </marshal>
         </onException>
-        <route id="_obtenerHistorial">
-            <from id="_direct:servicioHistorial" uri="cxfrs:bean:historialEndpoint"/>
-            <log id="_obtenerHistorial_1" message="${header.operationName}"/>
-            <bean id="_bean1" method="obtenerpagosyaportes" ref="HistorialProcessResponse"/>
-            <log id="_obtenerHistorial_2" message="${body}"/>
-            <marshal id="_marshal_1">
+        <restConfiguration component="restlet" port="{{middleware.historialpagosyaporte.puerto}}">
+            <!--dataFormatProperty key="prettyPrint" value="true"/-->
+        </restConfiguration>
+        <!-- define rest uri -->
+        <rest path="/bv/historialpagosyaportes">
+            <get outType="java.lang.String" produces="application/json" uri="/{rut}/{poliza}/{fechadesde}/{fechahasta}">
+                <to uri="direct:obtenerHistorial"/>
+            </get>
+        </rest>
+        <route id="_route_historialPagosyAportes">
+            <!-- mensaje a json -->
+            <from id="direct:obtenerHistorial" uri="direct:obtenerHistorial"/>
+            <bean id="_beanHistorial" method="obtenerpagosyaportes" ref="HistorialProcessResponse"/>
+            <log id="_loghistorial_1" message="LoG 1: Body ${body}"/>
+            <marshal id="_marshalHistorialPagoyAportes">
                 <json id="_json_1" library="Jackson"/>
             </marshal>
         </route>

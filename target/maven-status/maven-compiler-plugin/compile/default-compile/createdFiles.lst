@@ -1,4 +1,3 @@
-cl\bicevida\service\rest\SeviceHistorialPago.class
 cl\bicevida\ws\service\ObjectFactory.class
 cl\bicevida\ws\service\PagosYAportesSoapException.class
 cl\bicevida\ws\service\PagosYAportesWsVO.class

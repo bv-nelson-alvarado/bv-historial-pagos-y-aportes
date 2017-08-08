@@ -24,44 +24,49 @@ import cl.bicevida.ws.service.ResponseServiceTO;
 public class HistorialProcess extends WebApplicationJsonError {
 	Logger logger = LoggerFactory.getLogger(HistorialProcess.class);
 
-	
 	/**
-	 * Metodo que se utiliza para consultar los datos de historial de pagos y aportes
+	 * Metodo que se utiliza para consultar los datos de historial de pagos y
+	 * aportes
 	 * 
-	 * @param exchange process de camel
+	 * @param exchange
+	 *            process de camel
 	 * @return
-	 * @throws Exception Excepcion.
+	 * @throws Exception
+	 *             Excepcion.
 	 */
 	public GetPagosYAportesResponse obtenerpagosyaportes(Exchange exchange) throws Exception {
 		logger.info("[obtenerpagosyaportes]Inicio...");
-		
-		MessageContentsList cxfMessage = exchange.getIn().getBody(MessageContentsList.class);
+
 		GetPagosYAportesResponse response = new GetPagosYAportesResponse();
-		
+
 		String url = exchange.getContext().resolvePropertyPlaceholders("{{servicio.pagosyaportes}}");
-		
+
 		try {
-			String rutdv = cxfMessage.get(0).toString();
-			String poliza = cxfMessage.get(1).toString();
-			String fechaDesde = cxfMessage.get(2).toString();
-			String fechaHasta = cxfMessage.get(3).toString();
+			String rutdv = exchange.getIn().getHeader("rut").toString();
+			String poliza = exchange.getIn().getHeader("poliza").toString();
+			String fechaDesde = exchange.getIn().getHeader("fechadesde").toString();
+			String fechaHasta = exchange.getIn().getHeader("fechahasta").toString();
 
 			PagosyAportes client = createCXFClient(url);
 
 			ResponseServiceTO out = client.getPagosYAportes(rutdv, poliza, fechaDesde, fechaHasta);
 			response.setReturn(out);
 			logger.info("[obtenerpagosyaportes][" + response.toString() + "]");
+			exchange.getOut().setBody(response);
+
 		} catch (PagosYAportesSoapException e) {
 			logger.error("[obtenerpagosyaportes][SoapFaultException][" + e.getMessage() + "]", e);
 			exchange.getOut().getExchange().setException(e);
 			throw new WebApplicationException(e);
 		} catch (Exception e) {
-			logger.error("[obtenerpagosyaportes][Exception][" + e.getMessage() + "]", e);
+
+		    logger.error("[obtenerpagosyaportes][Exception][" + e.getMessage() + "]", e);
 			exchange.getOut().getExchange().setException(e);
 			throw new WebApplicationException(e);
 		}
-		exchange.getOut().setBody(response);
+
 		logger.info("[obtenerpagosyaportes]Fin...");
+		//exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
 		return response;
 	}
 
@@ -77,40 +82,42 @@ public class HistorialProcess extends WebApplicationJsonError {
 		return (PagosyAportes) factory.create();
 	}
 
-	public Response exceptionProcess(Exchange ex) throws IOException{
-		   logger.info("[HistorialProcess][exceptionProcess]...");
-		   Response response = null;
-		   
-		   Exception causa = ex.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-	       OutException out = new OutException();
-	       if(causa instanceof HttpOperationFailedException){
-	              HttpOperationFailedException c= (HttpOperationFailedException) causa;
-	              out.setMensaje(c.getMessage());
-	              out.setStatusCode(c.getStatusCode());
-	              out.setStatusText(c.getStatusText());
-	              ex.getOut().setBody(out);
-	       }
-	       else if(causa instanceof WebApplicationException){
-	              WebApplicationException c= (WebApplicationException) causa;
-	              out.setMensaje(c.getMessage());
-	              out.setStatusCode(c.getResponse().getStatus());
-	              out.setStatusText(c.getResponse().getStatusInfo().toString());
-	              ex.getOut().setBody(out);
-	              
-	              response = c.getResponse();
-	            //  response= Response.status(Response.Status.ACCEPTED).entity(out).build();
-	       }else{
-	              out.setMensaje(causa.getMessage());
-	              out.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-	              out.setStatusText(Response.Status.INTERNAL_SERVER_ERROR.toString());
-	              ex.getOut().setBody(out);  
-	       }
-	       
-	       
-	       response = JAXRSUtils.copyResponseIfNeeded(response);
-	       response = JAXRSUtils.fromResponse(response).type(MediaType.APPLICATION_JSON).build();
-	       return response;
+	/**
+	 * Maneja la excepciones del servicio, para un retorno de error en la cabecera
+	 * 
+	 * @param ex
+	 * @return
+	 * @throws IOException
+	 */
+	public OutException exceptionProcess(Exchange ex) throws IOException {
+		logger.info("[HistorialProcess][exceptionProcess]...");
 
+		Exception causa = ex.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+		OutException out = new OutException();
+		if (causa instanceof HttpOperationFailedException) {
+			HttpOperationFailedException c = (HttpOperationFailedException) causa;
+			out.setMensaje(c.getMessage());
+			out.setStatusCode(c.getStatusCode());
+			out.setStatusText(c.getStatusText());
+			ex.getOut().setBody(out);
+		} else if (causa instanceof WebApplicationException) {
+			WebApplicationException c = (WebApplicationException) causa;
+			out.setMensaje(c.getMessage());
+			out.setStatusCode(c.getResponse().getStatus());
+			out.setStatusText(c.getResponse().getStatusInfo().toString());
+			ex.getOut().setBody(out);
+
+		} else {
+			out.setMensaje(causa.getMessage());
+			out.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			out.setStatusText(Response.Status.INTERNAL_SERVER_ERROR.toString());
+			ex.getOut().setBody(out);
 		}
+
+		ex.getIn().setHeader(Exchange.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+		ex.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, out.getStatusCode());
+
+		return out;
+	}
 
 }
