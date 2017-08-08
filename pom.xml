@@ -1,64 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>cl.bicevida.esb</groupId>
-	<artifactId>bv-historial-pagos-y-aportes</artifactId>
-	<name>bv_historial_pagoyaportes</name>
-	<description>bv_historial_pagoyaportes</description>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<properties>
-		<camel.version>${camel.version}</camel.version>
-		<version.maven-bundle-plugin>${version.maven-bundle-plugin}</version.maven-bundle-plugin>
-		<jboss.fuse.bom.version>${jboss.fuse.bom.version}</jboss.fuse.bom.version>
-		<project.build.sourceEncoding>${project.build.sourceEncoding}</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>${project.reporting.outputEncoding}</project.reporting.outputEncoding>
-		<ohs.url>${ohs.url}</ohs.url>
-	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.fuse.bom</groupId>
-				<artifactId>jboss-fuse-parent</artifactId>
-				<version>${jboss.fuse.bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cl.bicevida.esb.sucursalvirtual</groupId>
+  <artifactId>bv-historial-pagos-y-aportes</artifactId>
+  <name>bv_historial_pagoyaportes</name>
+  <description>bv_historial_pagoyaportes</description>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Bicevida</name>
+    <url>https://bicevida.cl</url>
+  </organization>
+
+  <parent>
+  	<groupId>cl.bicevida.esb</groupId>
+  	<artifactId>bicevida-fuse-parent</artifactId>
+  	<version>1.0.0</version>
+  </parent>
+  
+  <properties>
+		<ohs.url>http://aplicaciones-desa.bicevida.cl</ohs.url>
+   </properties>
+
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-core</artifactId>
-			<version>${camel.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-blueprint</artifactId>
-			<version>${camel.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
+	
+	<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-test-blueprint</artifactId>
 			<scope>test</scope>
@@ -104,9 +81,9 @@
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
 			<version>2.5.4</version>
 		</dependency>
-	</dependencies>
-
-	<build>
+	</dependencies> 
+  
+ <build>
 	    <!-- Cambia los valores de los properties -->
 		<resources>
 			<resource>
@@ -124,8 +101,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>bv-historial-pagos-y-aportes</Bundle-SymbolicName>
-						<Bundle-Name>Bundle [bv-historial-pagos-y-aportes]</Bundle-Name>
+						<Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>Bundle [${artifactId}]</Bundle-Name>
 					</instructions>
 				</configuration>
 			</plugin>
