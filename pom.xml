@@ -35,17 +35,7 @@
 
 	<dependencies>
 	
-	<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-test-blueprint</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>org.apache.felix.fileinstall</artifactId>
-					<groupId>org.apache.felix</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-cxf</artifactId>
@@ -76,11 +66,7 @@
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-jackson</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>2.5.4</version>
-		</dependency>
+		
 	</dependencies> 
   
  <build>
@@ -102,7 +88,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
-						<Bundle-Name>Bundle [${artifactId}]</Bundle-Name>
+						<Bundle-Name>Bundle Boton de pago [${artifactId}]</Bundle-Name>
 					</instructions>
 				</configuration>
 			</plugin>

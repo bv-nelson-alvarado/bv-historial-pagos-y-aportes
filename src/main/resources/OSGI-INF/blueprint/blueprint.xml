@@ -16,11 +16,16 @@
             </marshal>
         </onException>
         <restConfiguration component="restlet" port="{{middleware.historialpagosyaporte.puerto}}">
-            <!--dataFormatProperty key="prettyPrint" value="true"/-->
+            <!-- <endpointProperty key="continuationTimeout" value="60000"/> -->
         </restConfiguration>
         <!-- define rest uri -->
-        <rest path="/bv/historialpagosyaportes">
-            <get outType="java.lang.String" produces="application/json" uri="/{rut}/{poliza}/{fechadesde}/{fechahasta}">
+        <rest path="/bicevida/boton/pago">
+            <get uri="/services/ping">
+                <route>
+                    <log id="_logOK" message="PING OK [bv-svi-mid-cliente]"/>
+                </route>
+            </get>
+            <get outType="java.lang.String" produces="application/json" uri="/consultarHistorialPagosyAportes/{rut}/{poliza}/{fechadesde}/{fechahasta}">
                 <to uri="direct:obtenerHistorial"/>
             </get>
         </rest>

@@ -1,27 +1,32 @@
 package cl.bicevida.beans.processors;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.http.common.HttpOperationFailedException;
-import org.apache.cxf.jaxrs.utils.JAXRSUtils;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.apache.cxf.message.MessageContentsList;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cl.bicevida.service.rest.exception.WebApplicationJsonError;
 import cl.bicevida.service.rest.exception.out.OutException;
 import cl.bicevida.ws.service.GetPagosYAportesResponse;
 import cl.bicevida.ws.service.PagosYAportesSoapException;
 import cl.bicevida.ws.service.PagosyAportes;
 import cl.bicevida.ws.service.ResponseServiceTO;
 
-public class HistorialProcess extends WebApplicationJsonError {
+public class HistorialProcess implements Serializable  {
+	/**
+	 * serial id
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	Logger logger = LoggerFactory.getLogger(HistorialProcess.class);
 
 	/**
@@ -36,6 +41,7 @@ public class HistorialProcess extends WebApplicationJsonError {
 	 */
 	public GetPagosYAportesResponse obtenerpagosyaportes(Exchange exchange) throws Exception {
 		logger.info("[obtenerpagosyaportes]Inicio...");
+		
 
 		GetPagosYAportesResponse response = new GetPagosYAportesResponse();
 
@@ -46,9 +52,17 @@ public class HistorialProcess extends WebApplicationJsonError {
 			String poliza = exchange.getIn().getHeader("poliza").toString();
 			String fechaDesde = exchange.getIn().getHeader("fechadesde").toString();
 			String fechaHasta = exchange.getIn().getHeader("fechahasta").toString();
+			
+			logger.info("[obtenerpagosyaportes][Llamada al servicio]"
+						+ "[rut=" + rutdv +" ] "
+						+ "[poliza=" + poliza +" ] "
+						+ "[fechaDesde=" + fechaDesde +" ] "
+						+ "[fechaHasta=" + fechaHasta +" ] ");
 
 			PagosyAportes client = createCXFClient(url);
-
+			
+					
+			
 			ResponseServiceTO out = client.getPagosYAportes(rutdv, poliza, fechaDesde, fechaHasta);
 			response.setReturn(out);
 			logger.info("[obtenerpagosyaportes][" + response.toString() + "]");
@@ -66,9 +80,9 @@ public class HistorialProcess extends WebApplicationJsonError {
 		}
 
 		logger.info("[obtenerpagosyaportes]Fin...");
-		//exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
 		return response;
 	}
+
 
 	/**
 	 * Metodo que conecta con nuestro cliente del servicioWEB
@@ -76,10 +90,23 @@ public class HistorialProcess extends WebApplicationJsonError {
 	 * @return Objeto de pagos y aportes
 	 */
 	protected static PagosyAportes createCXFClient(String url) {
+		long timeout = 300000L; // 300segundos
 		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
 		factory.setServiceClass(PagosyAportes.class);
 		factory.setAddress(url);
-		return (PagosyAportes) factory.create();
+		
+		
+		PagosyAportes runtimeService = (PagosyAportes) factory.create();
+		 
+        Client client = ClientProxy.getClient(runtimeService);
+        if (client != null) {
+            HTTPConduit conduit = (HTTPConduit) client.getConduit();
+            HTTPClientPolicy policy = new HTTPClientPolicy();
+            policy.setConnectionTimeout(timeout);
+            policy.setReceiveTimeout(timeout);
+            conduit.setClient(policy);
+        }
+        return runtimeService;
 	}
 
 	/**
@@ -90,7 +117,7 @@ public class HistorialProcess extends WebApplicationJsonError {
 	 * @throws IOException
 	 */
 	public OutException exceptionProcess(Exchange ex) throws IOException {
-		logger.info("[HistorialProcess][exceptionProcess]...");
+		logger.info("[HistorialProcess][exceptionProcess]Inicio...");
 
 		Exception causa = ex.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
 		OutException out = new OutException();
@@ -99,24 +126,24 @@ public class HistorialProcess extends WebApplicationJsonError {
 			out.setMensaje(c.getMessage());
 			out.setStatusCode(c.getStatusCode());
 			out.setStatusText(c.getStatusText());
-			ex.getOut().setBody(out);
+			
 		} else if (causa instanceof WebApplicationException) {
 			WebApplicationException c = (WebApplicationException) causa;
-			out.setMensaje(c.getMessage());
+			out.setMensaje(c.getCause().getMessage());
 			out.setStatusCode(c.getResponse().getStatus());
-			out.setStatusText(c.getResponse().getStatusInfo().toString());
-			ex.getOut().setBody(out);
-
+			out.setStatusText(c.getMessage());
+		
 		} else {
 			out.setMensaje(causa.getMessage());
-			out.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-			out.setStatusText(Response.Status.INTERNAL_SERVER_ERROR.toString());
-			ex.getOut().setBody(out);
+			out.setStatusCode(500);
+			out.setStatusText("Internal Server Error");
 		}
 
-		ex.getIn().setHeader(Exchange.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+		ex.getOut().setBody(out);
+		ex.getIn().setHeader(Exchange.CONTENT_TYPE, "application/json");
 		ex.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, out.getStatusCode());
-
+		
+		logger.info("[HistorialProcess][exceptionProcess]Fin...");
 		return out;
 	}
 

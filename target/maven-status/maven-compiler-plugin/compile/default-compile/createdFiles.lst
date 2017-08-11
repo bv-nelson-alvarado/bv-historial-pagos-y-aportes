@@ -1,7 +1,6 @@
 cl\bicevida\ws\service\ObjectFactory.class
 cl\bicevida\ws\service\PagosYAportesSoapException.class
 cl\bicevida\ws\service\PagosYAportesWsVO.class
-cl\bicevida\service\rest\exception\WebApplicationJsonError.class
 cl\bicevida\ws\service\GetPagosYAportesResponse.class
 cl\bicevida\ws\service\GetPagosYAportes.class
 cl\bicevida\service\rest\exception\out\OutException.class
