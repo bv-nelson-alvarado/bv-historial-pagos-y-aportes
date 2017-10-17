@@ -31,6 +31,15 @@
                 <json id="_json_1" library="Jackson"/>
             </marshal>
         </route>
+        
+        <route id="_route_historialPagosyAportesGlosa">
+            <from id="_from1Glosa" uri="direct-vm:consulaGlosa"/>
+            <bean id="_beanHistorialGlosa" method="obtenerGlosa" ref="HistorialProcessResponse"/>
+            <log id="_loghistorial_1Glosa" message="LoG 1: Body ${body}"/>
+            <marshal id="_marshalHistorialPagoyAportesGlosa">
+                <json id="_json_1Glosa" library="Jackson"/>
+            </marshal>
+        </route>
     </camelContext>
     <bean class="cl.bicevida.beans.processors.HistorialProcess" id="HistorialProcessResponse"/>
 </blueprint>

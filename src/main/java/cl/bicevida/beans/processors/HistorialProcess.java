@@ -16,9 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cl.bicevida.service.rest.exception.out.OutException;
+import cl.bicevida.ws.service.GetGlosaResponse;
 import cl.bicevida.ws.service.GetPagosYAportesResponse;
 import cl.bicevida.ws.service.PagosYAportesSoapException;
 import cl.bicevida.ws.service.PagosyAportes;
+import cl.bicevida.ws.service.ResponseGlosa;
 import cl.bicevida.ws.service.ResponseServiceTO;
 
 public class HistorialProcess implements Serializable  {
@@ -145,6 +147,30 @@ public class HistorialProcess implements Serializable  {
 		
 		logger.info("[HistorialProcess][exceptionProcess]Fin...");
 		return out;
+	}
+	
+	public GetGlosaResponse obtenerGlosa(Exchange exchange) throws Exception {
+
+		String url = exchange.getContext().resolvePropertyPlaceholders("{{servicio.pagosyaportes}}");
+		GetGlosaResponse response = new GetGlosaResponse();
+		try {
+			String rutdv = exchange.getIn().getHeader("rut").toString();
+			String numeroContrato = exchange.getIn().getHeader("numeroContrato").toString();
+
+			PagosyAportes client = createCXFClient(url);
+
+			ResponseGlosa out = client.getGlosa(rutdv, numeroContrato);
+			response.setReturn(out);
+
+			exchange.getOut().setBody(response);
+
+		} catch (Exception e) {
+
+			exchange.getOut().getExchange().setException(e);
+			throw new WebApplicationException(e);
+		}
+
+		return response;
 	}
 
 }

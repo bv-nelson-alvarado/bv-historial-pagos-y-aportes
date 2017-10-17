@@ -13,11 +13,25 @@
 <message name="PagosYAportesSoapException">
 <part name="fault" element="tns:PagosYAportesSoapException"/>
 </message>
+<message name="getGlosa">
+<part name="parameters" element="tns:getGlosa"/>
+</message>
+<message name="getGlosaResponse">
+<part name="parameters" element="tns:getGlosaResponse"/>
+</message>
+<message name="Exception">
+<part name="fault" element="tns:Exception"/>
+</message>
 <portType name="PagosyAportes">
 <operation name="getPagosYAportes">
 <input wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getPagosYAportesRequest" message="tns:getPagosYAportes"/>
 <output wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getPagosYAportesResponse" message="tns:getPagosYAportesResponse"/>
 <fault message="tns:PagosYAportesSoapException" name="PagosYAportesSoapException" wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getPagosYAportes/Fault/PagosYAportesSoapException"/>
+</operation>
+<operation name="getGlosa">
+<input wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getGlosaRequest" message="tns:getGlosa"/>
+<output wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getGlosaResponse" message="tns:getGlosaResponse"/>
+<fault message="tns:Exception" name="Exception" wsam:Action="http://service.ws.bicevida.cl/PagosyAportes/getGlosa/Fault/Exception"/>
 </operation>
 </portType>
 <binding name="PagosyAportesPortBinding" type="tns:PagosyAportes">
@@ -32,6 +46,18 @@
 </output>
 <fault name="PagosYAportesSoapException">
 <soap:fault name="PagosYAportesSoapException" use="literal"/>
+</fault>
+</operation>
+<operation name="getGlosa">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="Exception">
+<soap:fault name="Exception" use="literal"/>
 </fault>
 </operation>
 </binding>

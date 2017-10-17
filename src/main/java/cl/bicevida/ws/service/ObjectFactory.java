@@ -24,6 +24,9 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _GetGlosaResponse_QNAME = new QName("http://service.ws.bicevida.cl/", "getGlosaResponse");
+    private final static QName _Exception_QNAME = new QName("http://service.ws.bicevida.cl/", "Exception");
+    private final static QName _GetGlosa_QNAME = new QName("http://service.ws.bicevida.cl/", "getGlosa");
     private final static QName _GetPagosYAportes_QNAME = new QName("http://service.ws.bicevida.cl/", "getPagosYAportes");
     private final static QName _GetPagosYAportesResponse_QNAME = new QName("http://service.ws.bicevida.cl/", "getPagosYAportesResponse");
     private final static QName _PagosYAportesSoapException_QNAME = new QName("http://service.ws.bicevida.cl/", "PagosYAportesSoapException");
@@ -33,6 +36,30 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
+    }
+
+    /**
+     * Create an instance of {@link GetGlosaResponse }
+     * 
+     */
+    public GetGlosaResponse createGetGlosaResponse() {
+        return new GetGlosaResponse();
+    }
+
+    /**
+     * Create an instance of {@link Exception }
+     * 
+     */
+    public Exception createException() {
+        return new Exception();
+    }
+
+    /**
+     * Create an instance of {@link GetGlosa }
+     * 
+     */
+    public GetGlosa createGetGlosa() {
+        return new GetGlosa();
     }
 
     /**
@@ -60,6 +87,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ResponseGlosa }
+     * 
+     */
+    public ResponseGlosa createResponseGlosa() {
+        return new ResponseGlosa();
+    }
+
+    /**
      * Create an instance of {@link ResponseServiceTO }
      * 
      */
@@ -73,6 +108,33 @@ public class ObjectFactory {
      */
     public PagosYAportesWsVO createPagosYAportesWsVO() {
         return new PagosYAportesWsVO();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGlosaResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.ws.bicevida.cl/", name = "getGlosaResponse")
+    public JAXBElement<GetGlosaResponse> createGetGlosaResponse(GetGlosaResponse value) {
+        return new JAXBElement<GetGlosaResponse>(_GetGlosaResponse_QNAME, GetGlosaResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Exception }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.ws.bicevida.cl/", name = "Exception")
+    public JAXBElement<Exception> createException(Exception value) {
+        return new JAXBElement<Exception>(_Exception_QNAME, Exception.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGlosa }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.ws.bicevida.cl/", name = "getGlosa")
+    public JAXBElement<GetGlosa> createGetGlosa(GetGlosa value) {
+        return new JAXBElement<GetGlosa>(_GetGlosa_QNAME, GetGlosa.class, null, value);
     }
 
     /**
