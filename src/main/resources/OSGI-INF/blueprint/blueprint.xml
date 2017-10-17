@@ -15,23 +15,16 @@
                 <json id="_json_2" library="Jackson"/>
             </marshal>
         </onException>
-        <restConfiguration component="restlet" port="{{middleware.historialpagosyaporte.puerto}}">
-            <!-- <endpointProperty key="continuationTimeout" value="60000"/> -->
-        </restConfiguration>
         <!-- define rest uri -->
-        <rest path="/bicevida/boton/pago">
-            <get uri="/services/ping">
-                <route>
-                    <log id="_logOK" message="PING OK [bv-svi-mid-cliente]"/>
-                </route>
-            </get>
+        <!--    <rest path="/bicevida/boton/pago">
             <get outType="java.lang.String" produces="application/json" uri="/consultarHistorialPagosyAportes/{rut}/{poliza}/{fechadesde}/{fechahasta}">
                 <to uri="direct:obtenerHistorial"/>
             </get>
-        </rest>
+        </rest> -->
         <route id="_route_historialPagosyAportes">
             <!-- mensaje a json -->
-            <from id="direct:obtenerHistorial" uri="direct:obtenerHistorial"/>
+            <!-- <to id="direct:obtenerHistorial" uri="direct:obtenerHistorial"/> -->
+            <from id="_from1" uri="direct-vm:consultarhistorialpago"/>
             <bean id="_beanHistorial" method="obtenerpagosyaportes" ref="HistorialProcessResponse"/>
             <log id="_loghistorial_1" message="LoG 1: Body ${body}"/>
             <marshal id="_marshalHistorialPagoyAportes">
